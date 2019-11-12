@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <title>Hello world app html</title>
+    </head>
+    <body>
+        <h1>Fuuuuuuuu</h1>
+        <button data-src="http://localhost/api">api (http)</button>
+        <button data-src="https://localhost/api">api</button>
+        <button data-src="http://localhost/api/api/">api/api (http)</button>
+        <button data-src="https://localhost/api/api/">api/api</button>
+        <div id="app">
+
+        </div>
+
+        <script>
+            var app = document.getElementById('app');
+            var src = '/api';
+
+            function reqListener() {
+                app.innerHTML = this.responseText;
+            }
+
+            var oReq = new XMLHttpRequest();
+
+            oReq.onload = reqListener;
+
+            var buttons = document.getElementsByTagName('button');
+
+            for (var index = 0; index < buttons.length; index++) {
+                buttons.item(index).onclick = function () {
+                    console.log(this)
+                    src = this.getAttribute('data-src')
+                    alert(src)
+                    update()
+               };
+            };
+
+            var update = function() {
+                console.log(src);
+                oReq.open("get", src, true);
+                oReq.send();
+            };
+
+            update();
+
+        </script>
+    </body>
+</html>

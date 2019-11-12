@@ -1,0 +1,55 @@
+version: "3.7"
+services:
+  plop:
+    image: httpd:2.4.41
+    # ports:
+    #   - "80:80"
+    expose:
+      - "80"
+    volumes:
+      - ./frontend/app:/app
+      - ./frontend/conf:/usr/local/apache2/conf
+      - ./logs/front:/logs
+
+    labels:
+      - "traefik.docker.network=traefik"
+      - "traefik.backend=dubernard"
+      - "traefik.frontend.rule=Host:dubernard.netime.net"
+      - "traefik.port=80"
+      - "traefik.frontend.forcehost=dubernard.netime.net"
+    
+    networks: 
+      - traeffik
+
+  foo:
+    image: httpd:2.4.41
+    # ports:
+    #   - "8080:80"
+    expose:
+      - "80"
+    volumes:
+      - ./backend/app:/app
+      - ./backend/conf:/usr/local/apache2/conf
+      - ./logs/back:/logs
+    
+    depends_on:
+      - php
+    
+    networks: 
+      - traeffik
+    
+  php:
+    build:
+      context: ./php
+    expose: 
+      - "9000"
+    volumes: 
+      - ./backend/app:/app
+    
+    networks: 
+      - traeffik
+
+networks: 
+  traeffik:
+    external:
+      name: traefik_webgateway
